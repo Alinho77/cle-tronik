@@ -1,65 +1,91 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { CheckCircle, Clock } from 'lucide-react'
-import { siteConfig } from '@/config/site'
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Clock } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { BRANDS } from "@/lib/brands";
 
 const keyTypes = [
-  'Clé classique',
-  'Clé à puce',
-  'Télécommande',
-  'Smart Key / Clé intelligente',
-  'Ajout clé supplémentaire',
-  'Perte totale',
-  'Autre'
-]
+  "Clé classique",
+  "Clé à puce",
+  "Télécommande",
+  "Smart Key / Clé intelligente",
+  "Ajout clé supplémentaire",
+  "Perte totale",
+  "Autre",
+];
 
 export default function RendezVousPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [isBrandPickerOpen, setIsBrandPickerOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = isBrandPickerOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isBrandPickerOpen]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitError('')
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError("");
 
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData(e.currentTarget);
+    formData.set("brand", selectedBrand);
     const data = {
-      brand: formData.get('brand'),
-      model: formData.get('model'),
-      year: formData.get('year'),
-      keyType: formData.get('keyType'),
-      address: formData.get('address'),
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      message: formData.get('message')
-    }
+      brand: formData.get("brand"),
+      model: formData.get("model"),
+      year: formData.get("year"),
+      keyType: formData.get("keyType"),
+      address: formData.get("address"),
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      message: formData.get("message"),
+    };
 
     try {
-      const response = await fetch('/api/appointment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+      const response = await fetch("/api/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-      if (!response.ok) throw new Error('Erreur lors de l\'envoi')
+      const result = await response.json().catch(() => null);
 
-      setSubmitSuccess(true)
-      ;(e.target as HTMLFormElement).reset()
+      if (!response.ok || result?.success !== true) {
+        throw new Error(result?.error || "Erreur lors de l'envoi");
+      }
+
+      setSubmitSuccess(true);
+      setSelectedBrand("");
+      (e.target as HTMLFormElement).reset();
     } catch (error) {
-      setSubmitError('Une erreur est survenue. Veuillez réessayer ou nous appeler directement.')
-      console.error(error)
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Une erreur est survenue. Veuillez réessayer ou nous appeler directement.";
+      setSubmitError(message);
+      console.error(error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (submitSuccess) {
     return (
@@ -72,7 +98,8 @@ export default function RendezVousPage() {
               Votre demande de devis a été transmise avec succès.
             </p>
             <p className="text-gray-600 mb-8">
-              Nous vous contacterons dans les plus brefs délais par téléphone ou email pour confirmer votre rendez-vous.
+              Nous vous contacterons dans les plus brefs délais par téléphone ou
+              email pour confirmer votre rendez-vous.
             </p>
             <Button onClick={() => setSubmitSuccess(false)} variant="outline">
               Faire une autre demande
@@ -80,14 +107,16 @@ export default function RendezVousPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Demande de rendez-vous</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Demande de rendez-vous
+          </h1>
           <p className="text-xl text-gray-600">
             Remplissez le formulaire ci-dessous pour recevoir un devis gratuit
           </p>
@@ -96,19 +125,37 @@ export default function RendezVousPage() {
         <Card>
           <CardHeader>
             <CardTitle>Informations du véhicule</CardTitle>
-            <CardDescription>Précisez les détails de votre véhicule</CardDescription>
+            <CardDescription>
+              Précisez les détails de votre véhicule
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="brand">Marque *</Label>
-                  <Input
-                    id="brand"
-                    name="brand"
-                    required
-                    placeholder="Ex: Renault, Peugeot, BMW..."
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="brand"
+                      name="brand"
+                      required
+                      className="flex-1"
+                      value={selectedBrand}
+                      onChange={(event) => setSelectedBrand(event.target.value)}
+                      placeholder="Ex: Renault, Peugeot, BMW..."
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsBrandPickerOpen(true)}
+                    >
+                      Choisir
+                    </Button>
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Cliquez sur « Choisir » pour sélectionner une marque ou
+                    saisissez-la manuellement.
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="model">Modèle *</Label>
@@ -143,8 +190,10 @@ export default function RendezVousPage() {
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <option value="">Sélectionnez...</option>
-                    {keyTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                    {keyTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -215,7 +264,8 @@ export default function RendezVousPage() {
               <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg text-sm text-blue-900">
                 <Clock className="h-5 w-5 flex-shrink-0" />
                 <p>
-                  <strong>Réponse rapide :</strong> Nous vous recontactons sous 2 heures aux heures d'ouverture (8h-20h).
+                  <strong>Réponse rapide :</strong> Nous vous recontactons sous
+                  2 heures aux heures d'ouverture (8h-20h).
                 </p>
               </div>
 
@@ -225,17 +275,78 @@ export default function RendezVousPage() {
                 className="w-full"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Envoi en cours...' : 'Envoyer la demande'}
+                {isSubmitting ? "Envoi en cours..." : "Envoyer la demande"}
               </Button>
 
               <p className="text-xs text-center text-gray-500">
-                En envoyant ce formulaire, vous acceptez notre{' '}
-                <a href="/politique-confidentialite" className="underline">politique de confidentialité</a>.
+                En envoyant ce formulaire, vous acceptez notre{" "}
+                <a href="/politique-confidentialite" className="underline">
+                  politique de confidentialité
+                </a>
+                .
               </p>
             </form>
           </CardContent>
         </Card>
       </div>
+
+      {isBrandPickerOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+          onClick={() => setIsBrandPickerOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="absolute right-4 top-4 text-gray-400 transition hover:text-gray-700"
+              aria-label="Fermer"
+              onClick={() => setIsBrandPickerOpen(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-2xl font-semibold">
+              Sélectionnez votre marque
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Faites défiler la liste et cliquez sur la marque de votre
+              véhicule.
+            </p>
+            <div className="mt-6 overflow-x-auto pb-2">
+              <div className="flex gap-4">
+                {BRANDS.map((brand) => (
+                  <button
+                    key={brand.slug}
+                    type="button"
+                    onClick={() => {
+                      setSelectedBrand(brand.name);
+                      setIsBrandPickerOpen(false);
+                    }}
+                    className="flex min-w-[120px] flex-col items-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-center shadow-sm transition hover:border-blue-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                    <span className="text-3xl">
+                      {brand.Icon ? (
+                        <brand.Icon
+                          size={32}
+                          className="text-neutral-700"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        brand.fallback ?? ""
+                      )}
+                    </span>
+                    <span className="mt-2 text-sm font-semibold text-gray-700">
+                      {brand.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
