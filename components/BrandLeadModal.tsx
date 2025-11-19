@@ -140,14 +140,14 @@ export function BrandLeadModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+      className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/60 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-label="Demande d'intervention"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl"
+        className="relative w-full max-w-sm mx-auto px-4 max-h-[85vh] overflow-y-auto sm:rounded-lg md:max-w-lg md:rounded-xl bg-white py-6 md:p-6 shadow-2xl my-4 md:my-0"
         onClick={(event) => event.stopPropagation()}
       >
         <button
