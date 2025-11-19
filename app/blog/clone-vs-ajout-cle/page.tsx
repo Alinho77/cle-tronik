@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { siteConfig } from '@/config/site'
 
 export const metadata = {
   title: 'Cloner une clé ou ajouter une clé supplémentaire ?',

@@ -10,13 +10,14 @@ export default function Logo({
   className = "",
   variant = "default",
 }: LogoProps) {
-  // Hauteur fixe selon le variant, largeur automatique
-  const height = variant === "header" ? 500 : variant === "footer" ? 400 : 450;
-  const width = variant === "header" ? 1800 : 1600;
+  // Hauteur fixe selon le variant, adaptée à la taille des containers
+  const height = variant === "header" ? 300 : variant === "footer" ? 70 : 90;
+
+  const width = variant === "header" ? 500 : variant === "footer" ? 300 : 380;
 
   return (
     <div
-      className={`flex items-center ${className}`}
+      className={`flex items-start mt-10 ${className}`}
       style={{
         height: `${height}px`,
       }}
@@ -24,16 +25,16 @@ export default function Logo({
       <Image
         src="/cle-tronik.svg"
         alt="Clé-Tronik"
-        width={width} // Largeur approximative pour le ratio
+        width={width}
         height={height}
         style={{
           width: "auto",
           height: `${height}px`,
           objectFit: "contain",
-          marginLeft: "-3rem",
         }}
         priority
         className="h-full w-auto"
+        unoptimized
       />
     </div>
   );

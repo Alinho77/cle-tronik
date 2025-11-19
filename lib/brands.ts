@@ -64,7 +64,7 @@ export const BRANDS: BrandInfo[] = siteConfig.brands.map((brand) => {
     slug: slugify(brand.name),
     name: brand.name,
     Icon,
-    fallback: Icon ? undefined : brand.logo,
+    fallback: Icon !== undefined ? undefined : brand.logo,
   };
 });
 

@@ -5,7 +5,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '',
     '/services',
-    '/tarifs',
     '/zones',
     '/marques',
     '/rendez-vous',
@@ -25,4 +24,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.8,
   }))
 }
-

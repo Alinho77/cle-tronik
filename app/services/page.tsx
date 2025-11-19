@@ -3,15 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { siteConfig } from '@/config/site'
 
 export const metadata = {
-  title: 'Services',
-  description: 'Découvrez tous nos services de programmation de clés automobiles en Île-de-France',
+  title: 'Services & Tarifs',
+  description: 'Découvrez tous nos services et tarifs de programmation de clés automobiles en Île-de-France',
 }
 
 export default function ServicesPage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-3xl mx-auto text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Nos Services</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Services & Tarifs</h1>
         <p className="text-xl text-gray-600">
           Programmation professionnelle de clés automobiles pour tous types de véhicules
         </p>
@@ -48,4 +48,3 @@ export default function ServicesPage() {
     </div>
   )
 }
-

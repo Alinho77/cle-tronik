@@ -13,7 +13,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BrandGridSection } from "@/components/BrandGridSection";
 import { siteConfig } from "@/config/site";
-import { formatPhoneNumber } from "@/lib/utils";
 
 export default function Home() {
   return (

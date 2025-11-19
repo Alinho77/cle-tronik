@@ -60,9 +60,6 @@ export function Footer() {
                 <Link href="/services" className="hover:text-white">Services</Link>
               </li>
               <li>
-                <Link href="/tarifs" className="hover:text-white">Tarifs</Link>
-              </li>
-              <li>
                 <Link href="/zones" className="hover:text-white">Zones d'intervention</Link>
               </li>
               <li>

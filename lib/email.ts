@@ -87,7 +87,7 @@ Envoyé le ${new Date().toLocaleString("fr-FR")}
       subject: `Nouvelle demande de rendez-vous - ${data.brand} ${data.model}`,
       html,
       text,
-      reply_to: data.email,
+      replyTo: data.email,
     });
 
     if (error) {
